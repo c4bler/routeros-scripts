@@ -57,6 +57,11 @@
     :local fqdns [:toarray ""]
     :foreach lease in [find] do={
         :local hostname [get value-name=host-name $lease]
+        :local comment [get value-name=comment $lease]
+        # Set dns name as the Mikrotik comment if client does not advertise one
+        :if ([:len $hostname] = 0) do={
+            :set hostname $comment
+        }
         :if ([$IsValidName $hostname]) do={
             :local ipaddr [get value-name=address $lease]
             :local domain [$GetDomain $ipaddr]
